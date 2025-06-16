@@ -1,3 +1,5 @@
+
+document.addEventListener('DOMContentLoaded', function() {
 // 100 Emergency Medicine Cases
 
 // Load saved cases and flashcards from localStorage
@@ -332,28 +334,7 @@ function updateFlashcardCategoryDropdown() {
                 displayCurrentCase();
             }
         }
-function saveFlashcard() {
-    // Collect values from input fields
-    const question = document.getElementById('flashcard-question-input').value;
-    const answer = document.getElementById('flashcard-answer-input').value;
-    const category = document.getElementById('flashcard-category-select').value;
-    const specialty = document.getElementById('flashcard-specialty-select').value; // NEW
 
-    // Create the flashcard object including specialty
-    const flashcard = {
-        question: question,
-        answer: answer,
-        category: category,
-        specialty: specialty
-    };
-
-    // Save to your flashcards array (or however you store them)
-    flashcards.push(flashcard);
-
-    // Optionally reset the form or give feedback to the user
-    // document.getElementById('flashcard-form').reset();
-    alert('Flashcard saved!');
-}
         function displayFlashcard() {
             const flashcard = flashcards[currentCaseIndex];
             
@@ -392,7 +373,7 @@ function saveFlashcard() {
             }
         }
 
-        function markCard(result) {
+        function markCard(event, result) {
             // Prevent event bubbling to card flip
             event.stopPropagation();
             
@@ -1033,3 +1014,4 @@ localStorage.setItem('customFlashcards', JSON.stringify(customFlashcards));
         updateSpecialtyDropdown();
 updateFlashcardCategoryDropdown();
         displayCurrentCase();
+});
