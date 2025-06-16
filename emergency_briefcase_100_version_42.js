@@ -1,3 +1,67 @@
+const LOCAL_STORAGE_VERSION = '1.0';
+
+function initializeArrays() {
+    try {
+        // Get stored version
+        const storedVersion = localStorage.getItem('dataVersion');
+        
+        // If version mismatch, clear storage
+        if (storedVersion !== LOCAL_STORAGE_VERSION) {
+            localStorage.clear();
+            localStorage.setItem('dataVersion', LOCAL_STORAGE_VERSION);
+        }
+
+        // Initialize with default data only if no stored data exists
+        const storedCases = localStorage.getItem('customCases');
+        const storedFlashcards = localStorage.getItem('customFlashcards');
+
+        if (storedCases) {
+            window.allCases = JSON.parse(storedCases);
+        } else {
+            // Initialize with default cases
+            window.allCases = [
+                // ... default cases here ...
+            ];
+            syncLocalStorage();
+        }
+
+        if (storedFlashcards) {
+            window.flashcards = JSON.parse(storedFlashcards);
+        } else {
+            // Initialize with default flashcards
+            window.flashcards = [
+                // ... default flashcards here ...
+            ];
+            syncLocalStorage();
+        }
+    } catch (error) {
+        console.error('Error initializing data:', error);
+        // Fallback to defaults if localStorage fails
+        window.allCases = [];
+        window.flashcards = [];
+    }
+}
+
+function syncLocalStorage() {
+    try {
+        localStorage.setItem('customCases', JSON.stringify(allCases));
+        localStorage.setItem('customFlashcards', JSON.stringify(flashcards));
+        localStorage.setItem('dataVersion', LOCAL_STORAGE_VERSION);
+    } catch (error) {
+        console.error('Error saving to localStorage:', error);
+        alert('Failed to save changes. Please check your browser storage settings.');
+    }
+}
+
+// Modify DOMContentLoaded event listener:
+document.addEventListener('DOMContentLoaded', function() {
+    initializeArrays();
+    updateReviewButton();
+    updateFilterButtons();
+    updateSpecialtyDropdown();
+    updateFlashcardCategoryDropdown();
+    displayCurrentCase();
+});
 function syncLocalStorage() {
     localStorage.setItem('customCases', JSON.stringify(allCases));
     localStorage.setItem('customFlashcards', JSON.stringify(flashcards));
