@@ -705,6 +705,7 @@ updateFlashcardCategoryDropdown();
         }
 
         function switchEditorTab(tab) {
+    if (tab === 'flashcard') updateFlashcardCategoryDropdown();
             // Update active tab
             const tabs = document.querySelectorAll('.editor-tab');
             tabs.forEach(t => t.classList.remove('active'));
