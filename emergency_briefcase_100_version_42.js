@@ -1,4 +1,12 @@
 // 100 Emergency Medicine Cases
+
+// Load saved cases and flashcards from localStorage
+const savedCases = JSON.parse(localStorage.getItem('customCases') || '[]');
+const savedFlashcards = JSON.parse(localStorage.getItem('customFlashcards') || '[]');
+
+allCases.push(...savedCases);
+flashcards.push(...savedFlashcards);
+
         const allCases = [
             // Cardiology Cases (10)
             { category: 'Emergency Cardiology - STEMI', urgency: 'high', presentation: '67M crushing chest pain radiating to left arm x45 min. Diaphoretic, nauseous. PMH: HTN, DM, smoking 2ppd x30 years.', vitals: 'BP: 160/95, HR: 102, RR: 22, O2: 96%, Temp: 98.6°F', question: 'EKG shows 4mm ST elevation V1-V4. Door time 15min. ED priority?', options: ['Thrombolytics in ED', 'Activate cath lab for primary PCI', 'Medical management only', 'Emergent CABG consult'], correct: 1, explanation: 'Emergency activation of cath lab for primary PCI. Door-to-balloon goal <90min for STEMI patients.' },
@@ -774,6 +782,9 @@ updateFlashcardCategoryDropdown();
                 // Add new case
                 allCases.push(newCase);
                 alert('Case added successfully!');
+const customCases = JSON.parse(localStorage.getItem('customCases') || '[]');
+customCases.push(newCase);
+localStorage.setItem('customCases', JSON.stringify(customCases));
             }
             
             clearCaseForm();
@@ -807,6 +818,9 @@ updateFlashcardCategoryDropdown();
                 // Add new flashcard
                 flashcards.push(newFlashcard);
                 alert('Flashcard added successfully!');
+const customFlashcards = JSON.parse(localStorage.getItem('customFlashcards') || '[]');
+customFlashcards.push(newFlashcard);
+localStorage.setItem('customFlashcards', JSON.stringify(customFlashcards));
             }
             
             clearFlashcardForm();
