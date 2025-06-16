@@ -231,6 +231,20 @@
             'Sports Medicine', 'Geriatrics', 'Dermatology'
         ];
 
+
+function updateFlashcardCategoryDropdown() {
+    const flashcardSelect = document.getElementById('flashcard-category-input');
+    flashcardSelect.innerHTML = '';
+
+    availableSpecialties.forEach(specialty => {
+        const option = document.createElement('option');
+        option.value = specialty;
+        option.textContent = specialty;
+        flashcardSelect.appendChild(option);
+    });
+}
+
+
         // Emergency Medicine Flashcards - Key Facts
         const flashcards = [
             { question: "STEMI: Door-to-balloon time goal?", answer: "< 90 minutes for primary PCI\n< 30 minutes for thrombolytics if PCI not available", category: "Cardiology" },
@@ -398,6 +412,7 @@
                     
                     // Update the select dropdown
                     updateSpecialtyDropdown();
+updateFlashcardCategoryDropdown();
                     
                     // Select the new specialty
                     specialtySelect.value = customSpecialty;
@@ -980,4 +995,5 @@
         updateReviewButton();
         updateFilterButtons();
         updateSpecialtyDropdown();
+updateFlashcardCategoryDropdown();
         displayCurrentCase();
