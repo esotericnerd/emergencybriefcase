@@ -1,4 +1,47 @@
+function syncLocalStorage() {
+    localStorage.setItem('customCases', JSON.stringify(allCases));
+    localStorage.setItem('customFlashcards', JSON.stringify(flashcards));
+}
 
+// Modify the deleteFlashcard function:
+function deleteFlashcard(index) {
+    if (confirm('Are you sure you want to delete this flashcard?')) {
+        flashcards.splice(index, 1);
+        syncLocalStorage(); // Add this line
+        updateContentManagement();
+        alert('Flashcard deleted successfully!');
+    }
+}
+
+// Modify the deleteCase function:
+function deleteCase(index) {
+    if (confirm('Are you sure you want to delete this case?')) {
+        allCases.splice(index, 1);
+        incorrectCases = incorrectCases.filter(i => i !== index).map(i => i > index ? i - 1 : i);
+        syncLocalStorage(); // Add this line
+        updateContentManagement();
+        updateFilterButtons();
+        alert('Case deleted successfully!');
+    }
+}
+
+// Modify the saveFlashcard function to replace the localStorage code with:
+function saveFlashcard() {
+    // ... existing validation and flashcard creation code ...
+    
+    if (editingFlashcardIndex >= 0) {
+        flashcards[editingFlashcardIndex] = newFlashcard;
+        editingFlashcardIndex = -1;
+        alert('Flashcard updated successfully!');
+    } else {
+        flashcards.push(newFlashcard);
+        alert('Flashcard added successfully!');
+    }
+    
+    syncLocalStorage(); // Add this line
+    clearFlashcardForm();
+    updateContentManagement();
+}
 document.addEventListener('DOMContentLoaded', function() {
 // 100 Emergency Medicine Cases
 
