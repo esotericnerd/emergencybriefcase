@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Emergency Briefcase</title>
+    <link rel="stylesheet" href="emergency_briefcase_100_version_42.css">
+
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Medical briefcase -->
+                    <g transform="translate(50, 20)">
+                        <!-- Briefcase body -->
+                        <rect x="20" y="40" width="160" height="100" rx="8" ry="8" 
+                              fill="none" stroke="#4a4a4a" stroke-width="6"/>
+                        
+                        <!-- Briefcase handle -->
+                        <path d="M70 20 Q70 10, 80 10 L120 10 Q130 10, 130 20 L130 40 L70 40 Z" 
+                              fill="none" stroke="#4a4a4a" stroke-width="6"/>
+                        
+                        <!-- Side handles -->
+                        <rect x="0" y="70" width="20" height="20" rx="4" ry="4" 
+                              fill="none" stroke="#4a4a4a" stroke-width="4"/>
+                        <rect x="180" y="70" width="20" height="20" rx="4" ry="4" 
+                              fill="none" stroke="#4a4a4a" stroke-width="4"/>
+                        
+                        <!-- Briefcase clasps -->
+                        <rect x="15" y="50" width="8" height="15" rx="2" ry="2" fill="#4a4a4a"/>
+                        <rect x="177" y="50" width="8" height="15" rx="2" ry="2" fill="#4a4a4a"/>
+                        <rect x="15" y="105" width="8" height="15" rx="2" ry="2" fill="#4a4a4a"/>
+                        <rect x="177" y="105" width="8" height="15" rx="2" ry="2" fill="#4a4a4a"/>
+                        
+                        <!-- Medical cross circle background -->
+                        <circle cx="100" cy="90" r="30" fill="white" stroke="#4a4a4a" stroke-width="3"/>
+                        
+                        <!-- Red cross -->
+                        <rect x="95" y="75" width="10" height="30" fill="#dc2626"/>
+                        <rect x="85" y="85" width="30" height="10" fill="#dc2626"/>
+                    </g>
+                    
+                    <!-- Text -->
+                    <g transform="translate(0, 160)">
+                        <text x="0" y="30" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white">emergency</text>
+                        <text x="200" y="30" font-family="Arial, sans-serif" font-size="32" font-weight="normal" fill="white">briefcase</text>
+                    </g>
+                </svg>
+            </div>
+            <div class="header-text">
+                <h1>Emergency Briefcase</h1>
+                <p>Emergency Medicine Case Trainer</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div>
+            <div class="stat-value" id="accuracy">0%</div>
+            <div class="stat-label">Accuracy</div>
+        </div>
+        <div>
+            <div class="stat-value" id="score">0/0</div>
+            <div class="stat-label">Score</div>
+        </div>
+        <div>
+            <div class="stat-value" id="streak">0</div>
+            <div class="stat-label">Current Streak</div>
+        </div>
+        <div>
+            <div class="stat-value" id="case-progress">1/100</div>
+            <div class="stat-label">Case</div>
+        </div>
+    </div>
+
+    <div class="filters">
+        <button class="filter-btn active" onclick="filterCases('all')">All Cases (100)</button>
+        <button class="filter-btn" onclick="filterCases('review')" id="review-btn">Review Mode (0)</button>
+        <button class="filter-btn" onclick="toggleFlashcardMode()" id="flashcard-btn">Flashcard Mode</button>
+        <button class="filter-btn" onclick="toggleEditor()" id="editor-btn">Content Editor</button>
+        <button class="filter-btn" onclick="filterCases('Cardiology')">Cardiology (10)</button>
+        <button class="filter-btn" onclick="filterCases('Pulmonology')">Pulmonology (10)</button>
+        <button class="filter-btn" onclick="filterCases('Neurology')">Neurology (10)</button>
+        <button class="filter-btn" onclick="filterCases('Endocrinology')">Endocrinology (10)</button>
+        <button class="filter-btn" onclick="filterCases('Gastroenterology')">Gastroenterology (10)</button>
+        <button class="filter-btn" onclick="filterCases('Nephrology')">Nephrology (10)</button>
+        <button class="filter-btn" onclick="filterCases('Trauma')">Trauma (10)</button>
+        <button class="filter-btn" onclick="filterCases('Infectious')">Infectious (10)</button>
+        <button class="filter-btn" onclick="filterCases('Toxicology')">Toxicology (10)</button>
+        <button class="filter-btn" onclick="filterCases('Psychiatry')">Psychiatry (10)</button>
+    </div>
+
+    <div class="case" id="case-container">
+        <div class="case-title" id="case-title">Loading...</div>
+        <div class="presentation" id="presentation">Loading case...</div>
+        <div class="vitals">
+            <div class="vitals-label">Vital Signs</div>
+            <div id="vitals">Loading...</div>
+        </div>
+        <div class="question" id="question">Loading question...</div>
+        <div class="options" id="options">Loading options...</div>
+        <div class="explanation" id="explanation">
+            <div class="explanation-label">Explanation</div>
+            <div class="explanation-text" id="explanation-text"></div>
+        </div>
+        <button class="next-btn" id="next-btn" onclick="nextCase()">Next Case →</button>
+    </div>
+
+    <!-- Flashcard Mode Container -->
+    <div class="case" id="flashcard-container" style="display: none;">
+        <div class="flashcard-stats" id="flashcard-stats"></div>
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+            <div class="flashcard-content">
+                <div class="flashcard-front">
+                    <div id="flashcard-question"></div>
+                </div>
+                <div class="flashcard-back">
+                    <div id="flashcard-answer"></div>
+                    <div class="flashcard-buttons">
+                        <button class="flashcard-btn know-btn" onclick="markCard('know'); event.stopPropagation();">I Know This ✓</button>
+                        <button class="flashcard-btn dont-know-btn" onclick="markCard('dont-know'); event.stopPropagation();">Need More Practice ✗</button>
+                    </div>
+                </div>
+            </div>
+            <div class="flashcard-hint">Click to reveal answer</div>
+        </div>
+    </div>
+
+    <!-- Content Editor Container -->
+    <div class="editor-container" id="editor-container" style="display: none;">
+        <div class="editor-tabs">
+            <button class="editor-tab active" onclick="switchEditorTab('case')">Add Case</button>
+            <button class="editor-tab" onclick="switchEditorTab('flashcard')">Add Flashcard</button>
+            <button class="editor-tab" onclick="switchEditorTab('manage')">Manage Content</button>
+        </div>
+
+        <!-- Case Editor Form -->
+        <div class="editor-form active" id="case-form">
+            <h3>Create New Case</h3>
+            <div class="form-group">
+                <label class="form-label">Specialty</label>
+                <div style="display: flex; gap: 10px; align-items: end;">
+                    <select class="form-select" id="specialty-select" style="flex: 1;" onchange="handleSpecialtyChange()">
+                        <option value="">Select Specialty</option>
+                        <option value="Cardiology">Cardiology</option>
+                        <option value="Pulmonology">Pulmonology</option>
+                        <option value="Neurology">Neurology</option>
+                        <option value="Endocrinology">Endocrinology</option>
+                        <option value="Gastroenterology">Gastroenterology</option>
+                        <option value="Nephrology">Nephrology</option>
+                        <option value="Trauma">Trauma</option>
+                        <option value="Infectious Disease">Infectious Disease</option>
+                        <option value="Toxicology">Toxicology</option>
+                        <option value="Psychiatry">Psychiatry</option>
+                        <option value="Orthopedics">Orthopedics</option>
+                        <option value="Pediatrics">Pediatrics</option>
+                        <option value="OB/GYN">OB/GYN</option>
+                        <option value="Ophthalmology">Ophthalmology</option>
+                        <option value="ENT">ENT</option>
+                        <option value="Radiology">Radiology</option>
+                        <option value="Sports Medicine">Sports Medicine</option>
+                        <option value="Geriatrics">Geriatrics</option>
+                        <option value="Dermatology">Dermatology</option>
+                        <option value="custom">🔧 Add New Specialty</option>
+                    </select>
+                    <button type="button" class="submit-btn add-specialty-btn" id="add-specialty-btn" onclick="saveCustomSpecialty()" style="display: none;">+ Add</button>
+                </div>
+                <input type="text" class="form-input" id="custom-specialty" placeholder="Enter new specialty name" style="margin-top: 10px; display: none;">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Category</label>
+                <input type="text" class="form-input" id="case-category" placeholder="Emergency Cardiology - STEMI" readonly style="background: #f9fafb;">
+                <small style="color: #6b7280; font-size: 12px;">Auto-generated from specialty and condition</small>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Condition/Topic</label>
+                <input type="text" class="form-input" id="case-condition" placeholder="STEMI, Hip Fracture, Febrile Seizure..." oninput="updateCategoryField()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Urgency</label>
+                <select class="form-select" id="case-urgency">
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Patient Presentation</label>
+                <textarea class="form-textarea" id="case-presentation" placeholder="67M crushing chest pain radiating to left arm x45 min..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Vital Signs</label>
+                <input type="text" class="form-input" id="case-vitals" placeholder="BP: 160/95, HR: 102, RR: 22, O2: 96%">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Clinical Question</label>
+                <textarea class="form-textarea" id="case-question" placeholder="EKG shows 4mm ST elevation V1-V4. ED priority?"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Answer Options</label>
+                <div class="options-container">
+                    <input type="text" class="option-input" id="option-0" placeholder="Option A">
+                    <label><input type="radio" name="correct" value="0" class="correct-radio"> Correct</label>
+                </div>
+                <div class="options-container">
+                    <input type="text" class="option-input" id="option-1" placeholder="Option B">
+                    <label><input type="radio" name="correct" value="1" class="correct-radio"> Correct</label>
+                </div>
+                <div class="options-container">
+                    <input type="text" class="option-input" id="option-2" placeholder="Option C">
+                    <label><input type="radio" name="correct" value="2" class="correct-radio"> Correct</label>
+                </div>
+                <div class="options-container">
+                    <input type="text" class="option-input" id="option-3" placeholder="Option D">
+                    <label><input type="radio" name="correct" value="3" class="correct-radio"> Correct</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Explanation</label>
+                <textarea class="form-textarea" id="case-explanation" placeholder="Emergency activation of cath lab for primary PCI..."></textarea>
+            </div>
+            <button class="submit-btn" onclick="saveCase()">Add Case</button>
+            <button class="cancel-btn" onclick="clearCaseForm()">Clear Form</button>
+        </div>
+
+        <!-- Flashcard Editor Form -->
+        <div class="editor-form" id="flashcard-form">
+            <h3>Create New Flashcard</h3>
+            <div class="form-group">
+                <label class="form-label">Question</label>
+                <textarea class="form-textarea" id="flashcard-question-input" placeholder="STEMI: Door-to-balloon time goal?"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Answer</label>
+                <textarea class="form-textarea" id="flashcard-answer-input" placeholder="< 90 minutes for primary PCI..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Category</label>
+                <select class="form-select" id="flashcard-category-input">
+                    <option value="Cardiology">Cardiology</option>
+                    <option value="Pulmonology">Pulmonology</option>
+                    <option value="Neurology">Neurology</option>
+                    <option value="Endocrinology">Endocrinology</option>
+                    <option value="Gastroenterology">Gastroenterology</option>
+                    <option value="Nephrology">Nephrology</option>
+                    <option value="Trauma">Trauma</option>
+                    <option value="Infectious Disease">Infectious Disease</option>
+                    <option value="Toxicology">Toxicology</option>
+                    <option value="Psychiatry">Psychiatry</option>
+                </select>
+            </div>
+            <button class="submit-btn" onclick="saveFlashcard()">Add Flashcard</button>
+            <button class="cancel-btn" onclick="clearFlashcardForm()">Clear Form</button>
+        </div>
+
+        <!-- Content Management -->
+        <div class="editor-form" id="manage-form">
+            <h3>Manage Content</h3>
+            <p>Total Cases: <span id="total-cases">100</span> | Total Flashcards: <span id="total-flashcards">30</span></p>
+            
+            <h4>Recent Cases</h4>
+            <div class="content-list" id="case-list">
+                <!-- Cases will be populated here -->
+            </div>
+
+            <h4>Recent Flashcards</h4>
+            <div class="content-list" id="flashcard-list">
+                <!-- Flashcards will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="emergency_briefcase_100_version_42.js"></script>
+
+</body>
+</html>
