@@ -12,32 +12,15 @@ function initializeArrays() {
             localStorage.setItem('dataVersion', LOCAL_STORAGE_VERSION);
         }
 
-        // Initialize with default data only if no stored data exists
+        // Load stored data if available
         const storedCases = localStorage.getItem('customCases');
         const storedFlashcards = localStorage.getItem('customFlashcards');
 
-        if (storedCases) {
-            window.allCases = JSON.parse(storedCases);
-        } else {
-            // Initialize with default cases
-            window.allCases = [
-                // ... default cases here ...
-            ];
-            syncLocalStorage();
-        }
-
-        if (storedFlashcards) {
-            window.flashcards = JSON.parse(storedFlashcards);
-        } else {
-            // Initialize with default flashcards
-            window.flashcards = [
-                // ... default flashcards here ...
-            ];
-            syncLocalStorage();
-        }
+        window.allCases = storedCases ? JSON.parse(storedCases) : [];
+        window.flashcards = storedFlashcards ? JSON.parse(storedFlashcards) : [];
     } catch (error) {
         console.error('Error initializing data:', error);
-        // Fallback to defaults if localStorage fails
+       // Fallback to empty arrays if localStorage fails
         window.allCases = [];
         window.flashcards = [];
     }
@@ -79,6 +62,7 @@ function deleteCase(index) {
 
 // Initialize app after DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
+    initializeArrays();
     // Emergency medicine cases dataset
 
 
