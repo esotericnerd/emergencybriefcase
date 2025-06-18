@@ -53,19 +53,7 @@ function syncLocalStorage() {
     }
 }
 
-// Modify DOMContentLoaded event listener:
-document.addEventListener('DOMContentLoaded', function() {
-    initializeArrays();
-    updateReviewButton();
-    updateFilterButtons();
-    updateSpecialtyDropdown();
-    updateFlashcardCategoryDropdown();
-    displayCurrentCase();
-});
-function syncLocalStorage() {
-    localStorage.setItem('customCases', JSON.stringify(allCases));
-    localStorage.setItem('customFlashcards', JSON.stringify(flashcards));
-}
+// Removed duplicate DOMContentLoaded listener and syncLocalStorage
 
 // Modify the deleteFlashcard function:
 function deleteFlashcard(index) {
@@ -109,12 +97,6 @@ function saveFlashcard() {
 document.addEventListener('DOMContentLoaded', function() {
 // 100 Emergency Medicine Cases
 
-// Load saved cases and flashcards from localStorage
-const savedCases = JSON.parse(localStorage.getItem('customCases') || '[]');
-const savedFlashcards = JSON.parse(localStorage.getItem('customFlashcards') || '[]');
-
-allCases.push(...savedCases);
-flashcards.push(...savedFlashcards);
 
         const allCases = [
             // Cardiology Cases (10)
@@ -327,6 +309,13 @@ flashcards.push(...savedFlashcards);
             { category: 'Emergency Psychiatry - Catatonia', urgency: 'medium', presentation: '26M with schizophrenia presents with mutism, immobility, waxy flexibility, posturing. Family reports 2 days of not eating or drinking.', vitals: 'BP: 110/70, HR: 85, RR: 14, O2: 98%', question: 'Catatonia with decreased oral intake. ED treatment?', options: ['Antipsychotics', 'Lorazepam', 'ECT', 'Lorazepam trial first'], correct: 3, explanation: 'Catatonia: lorazepam trial first-line. ECT if benzodiazepines ineffective or malignant catatonia.' }
         ];
 
+    // Load saved cases and flashcards from localStorage
+        const savedCases = JSON.parse(localStorage.getItem('customCases') || '[]');
+        const savedFlashcards = JSON.parse(localStorage.getItem('customFlashcards') || '[]');
+
+        allCases.push(...savedCases);
+        flashcards.push(...savedFlashcards);
+    
         // App state
         let currentCaseIndex = 0;
         let selectedAnswer = null;
@@ -616,8 +605,8 @@ updateFlashcardCategoryDropdown();
             
             // Create new filter buttons HTML
             let filtersHTML = `
-                <button class="filter-btn active" onclick="filterCases('all')">All Cases (${allCases.length})</button>
-                <button class="filter-btn" onclick="filterCases('review')" id="review-btn">Review Mode (${incorrectCases.length})</button>
+                <button class="filter-btn active" onclick="filterCases('all', event)">All Cases (${allCases.length})</button>
+                <button class="filter-btn" onclick="filterCases('review', event)" id="review-btn">Review Mode (${incorrectCases.length})</button>
                 <button class="filter-btn" onclick="toggleFlashcardMode()" id="flashcard-btn">Flashcard Mode</button>
                 <button class="filter-btn" onclick="toggleEditor()" id="editor-btn">Content Editor</button>
             `;
@@ -625,7 +614,7 @@ updateFlashcardCategoryDropdown();
             // Add buttons for each detected category
             categories.forEach(category => {
                 const count = allCases.filter(c => c.category.includes(category)).length;
-                filtersHTML += `<button class="filter-btn" onclick="filterCases('${category}')">${category} (${count})</button>`;
+                filtersHTML += `<button class="filter-btn" onclick="filterCases('${category}', event)">${category} (${count})</button>`;
             });
             
             filtersContainer.innerHTML = filtersHTML;
@@ -641,7 +630,7 @@ updateFlashcardCategoryDropdown();
                 document.getElementById('review-btn').classList.add('active');
                 document.querySelector('.filter-btn').classList.remove('active');
             } else if (currentFilter !== 'all') {
-                const activeBtn = document.querySelector(`[onclick="filterCases('${currentFilter}')"]`);
+                const activeBtn = document.querySelector(`[onclick="filterCases('${currentFilter}', event)"]`);
                 if (activeBtn) {
                     activeBtn.classList.add('active');
                     document.querySelector('.filter-btn').classList.remove('active');
@@ -1087,7 +1076,7 @@ localStorage.setItem('customFlashcards', JSON.stringify(customFlashcards));
             }
         }
 
-        function filterCases(filter) {
+        function filterCases(filter, event) {
             // Don't allow review mode if no incorrect cases
             if (filter === 'review' && incorrectCases.length === 0) {
                 return;
@@ -1109,7 +1098,9 @@ localStorage.setItem('customFlashcards', JSON.stringify(customFlashcards));
             // Update filter buttons
             const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if (event) {
+                event.target.classList.add('active');
+            }
 
             displayCurrentCase();
         }
