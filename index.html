@@ -541,20 +541,18 @@
     </div>
 
     <div class="filters">
-        <button class="filter-btn active" onclick="filterCases('all')">All Cases (100)</button>
-        <button class="filter-btn" onclick="filterCases('review')" id="review-btn">Review Mode (0)</button>
-        <button class="filter-btn" onclick="toggleFlashcardMode()" id="flashcard-btn">Flashcard Mode</button>
-        <button class="filter-btn" onclick="toggleEditor()" id="editor-btn">Content Editor</button>
-        <button class="filter-btn" onclick="filterCases('Cardiology')">Cardiology (10)</button>
-        <button class="filter-btn" onclick="filterCases('Pulmonology')">Pulmonology (10)</button>
-        <button class="filter-btn" onclick="filterCases('Neurology')">Neurology (10)</button>
-        <button class="filter-btn" onclick="filterCases('Endocrinology')">Endocrinology (10)</button>
-        <button class="filter-btn" onclick="filterCases('Gastroenterology')">Gastroenterology (10)</button>
-        <button class="filter-btn" onclick="filterCases('Nephrology')">Nephrology (10)</button>
-        <button class="filter-btn" onclick="filterCases('Trauma')">Trauma (10)</button>
-        <button class="filter-btn" onclick="filterCases('Infectious')">Infectious (10)</button>
-        <button class="filter-btn" onclick="filterCases('Toxicology')">Toxicology (10)</button>
-        <button class="filter-btn" onclick="filterCases('Psychiatry')">Psychiatry (10)</button>
+        <button class="filter-btn active" onclick="filterCases('all', event)">All Cases (100)</button>
+        <button class="filter-btn" onclick="filterCases('review', event)" id="review-btn">Review Mode (0)</button>
+        <button class="filter-btn" onclick="filterCases('Cardiology', event)">Cardiology (10)</button>
+        <button class="filter-btn" onclick="filterCases('Pulmonology', event)">Pulmonology (10)</button>
+        <button class="filter-btn" onclick="filterCases('Neurology', event)">Neurology (10)</button>
+        <button class="filter-btn" onclick="filterCases('Endocrinology', event)">Endocrinology (10)</button>
+        <button class="filter-btn" onclick="filterCases('Gastroenterology', event)">Gastroenterology (10)</button>
+        <button class="filter-btn" onclick="filterCases('Nephrology', event)">Nephrology (10)</button>
+        <button class="filter-btn" onclick="filterCases('Trauma', event)">Trauma (10)</button>
+        <button class="filter-btn" onclick="filterCases('Infectious', event)">Infectious (10)</button>
+        <button class="filter-btn" onclick="filterCases('Toxicology', event)">Toxicology (10)</button>
+        <button class="filter-btn" onclick="filterCases('Psychiatry', event)">Psychiatry (10)</button>
     </div>
 
     <div class="case" id="case-container">
@@ -584,8 +582,8 @@
                 <div class="flashcard-back">
                     <div id="flashcard-answer"></div>
                     <div class="flashcard-buttons">
-                        <button class="flashcard-btn know-btn" onclick="markCard('know'); event.stopPropagation();">I Know This ✓</button>
-                        <button class="flashcard-btn dont-know-btn" onclick="markCard('dont-know'); event.stopPropagation();">Need More Practice ✗</button>
+                        <button class="flashcard-btn know-btn" onclick="markCard('know', event)">I Know This ✓</button>
+                        <button class="flashcard-btn dont-know-btn" onclick="markCard('dont-know', event)">Need More Practice ✗</button>
                     </div>
                 </div>
             </div>
@@ -1089,9 +1087,11 @@
             }
         }
 
-        function markCard(result) {
+        function markCard(result, event) {
             // Prevent event bubbling to card flip
-            event.stopPropagation();
+            if (event) {
+                event.stopPropagation();
+            }
             
             flashcardStats.total++;
             
@@ -1689,7 +1689,7 @@
             }
         }
 
-        function filterCases(filter) {
+        function filterCases(filter, event) {
             // Don't allow review mode if no incorrect cases
             if (filter === 'review' && incorrectCases.length === 0) {
                 return;
@@ -1711,7 +1711,9 @@
             // Update filter buttons
             const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if (event) {
+                event.target.classList.add('active');
+            }
 
             displayCurrentCase();
         }
