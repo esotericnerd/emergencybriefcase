@@ -77,23 +77,6 @@ function deleteCase(index) {
     }
 }
 
-// Add or update a flashcard and persist the data
-function saveFlashcard() {
-    // Validation and flashcard creation happen above
-    
-    if (editingFlashcardIndex >= 0) {
-        flashcards[editingFlashcardIndex] = newFlashcard;
-        editingFlashcardIndex = -1;
-        alert('Flashcard updated successfully!');
-    } else {
-        flashcards.push(newFlashcard);
-        alert('Flashcard added successfully!');
-    }
-    
-    syncLocalStorage();
-    clearFlashcardForm();
-    updateContentManagement();
-}
 // Initialize app after DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     // Emergency medicine cases dataset
@@ -880,11 +863,9 @@ updateFlashcardCategoryDropdown();
                 // Add new case
                 allCases.push(newCase);
                 alert('Case added successfully!');
-const customCases = JSON.parse(localStorage.getItem('customCases') || '[]');
-customCases.push(newCase);
-localStorage.setItem('customCases', JSON.stringify(customCases));
             }
-            
+           
+            syncLocalStorage();           
             clearCaseForm();
             updateContentManagement();
             updateFilterButtons();
@@ -916,11 +897,9 @@ localStorage.setItem('customCases', JSON.stringify(customCases));
                 // Add new flashcard
                 flashcards.push(newFlashcard);
                 alert('Flashcard added successfully!');
-const customFlashcards = JSON.parse(localStorage.getItem('customFlashcards') || '[]');
-customFlashcards.push(newFlashcard);
-localStorage.setItem('customFlashcards', JSON.stringify(customFlashcards));
             }
-            
+            syncLocalStorage();
+
             clearFlashcardForm();
             updateContentManagement();
         }
@@ -1056,19 +1035,7 @@ localStorage.setItem('customFlashcards', JSON.stringify(customFlashcards));
             switchEditorTab('flashcard');
         }
 
-        function deleteCase(index) {
-            if (confirm('Are you sure you want to delete this case?')) {
-                allCases.splice(index, 1);
-                
-                // Update incorrect cases array
-                incorrectCases = incorrectCases.filter(i => i !== index).map(i => i > index ? i - 1 : i);
-                
-                updateContentManagement();
-                updateFilterButtons();
-                alert('Case deleted successfully!');
-            }
-        }
-
+        
         function deleteFlashcard(index) {
             if (confirm('Are you sure you want to delete this flashcard?')) {
                 flashcards.splice(index, 1);
