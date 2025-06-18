@@ -1,5 +1,6 @@
 const LOCAL_STORAGE_VERSION = '1.0';
 
+// Load saved cases and flashcards or initialize defaults
 function initializeArrays() {
     try {
         // Get stored version
@@ -42,6 +43,7 @@ function initializeArrays() {
     }
 }
 
+// Persist cases and flashcards to localStorage
 function syncLocalStorage() {
     try {
         localStorage.setItem('customCases', JSON.stringify(allCases));
@@ -53,33 +55,31 @@ function syncLocalStorage() {
     }
 }
 
-// Removed duplicate DOMContentLoaded listener and syncLocalStorage
-
-// Modify the deleteFlashcard function:
+// Remove a flashcard and persist the updated list
 function deleteFlashcard(index) {
     if (confirm('Are you sure you want to delete this flashcard?')) {
         flashcards.splice(index, 1);
-        syncLocalStorage(); // Add this line
+        syncLocalStorage();
         updateContentManagement();
         alert('Flashcard deleted successfully!');
     }
 }
 
-// Modify the deleteCase function:
+// Remove a case, update tracking arrays, and persist the change
 function deleteCase(index) {
     if (confirm('Are you sure you want to delete this case?')) {
         allCases.splice(index, 1);
         incorrectCases = incorrectCases.filter(i => i !== index).map(i => i > index ? i - 1 : i);
-        syncLocalStorage(); // Add this line
+        syncLocalStorage();
         updateContentManagement();
         updateFilterButtons();
         alert('Case deleted successfully!');
     }
 }
 
-// Modify the saveFlashcard function to replace the localStorage code with:
+// Add or update a flashcard and persist the data
 function saveFlashcard() {
-    // ... existing validation and flashcard creation code ...
+    // Validation and flashcard creation happen above
     
     if (editingFlashcardIndex >= 0) {
         flashcards[editingFlashcardIndex] = newFlashcard;
@@ -90,12 +90,13 @@ function saveFlashcard() {
         alert('Flashcard added successfully!');
     }
     
-    syncLocalStorage(); // Add this line
+    syncLocalStorage();
     clearFlashcardForm();
     updateContentManagement();
 }
+// Initialize app after DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-// 100 Emergency Medicine Cases
+    // Emergency medicine cases dataset
 
 
         const allCases = [
