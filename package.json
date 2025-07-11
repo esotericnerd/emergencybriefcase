@@ -1,11 +1,8 @@
 {
-  "name": "emergencybriefcase",
+  "name": "emergencybriefcase-backend",
   "version": "1.0.0",
-  "scripts": {
-    "test": "jest"
-  },
-  "devDependencies": {
-    "jest": "^29.6.1",
-    "jsdom": "^22.1.0"
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7"
   }
 }
