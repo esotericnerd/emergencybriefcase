@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Emergency Briefcase Editor</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; }
+    textarea { width: 100%; height: 300px; }
+    .controls { margin-top: 1em; }
+    input[type="text"] { width: 200px; }
+  </style>
+</head>
+<body>
+  <h1>Emergency Briefcase Editor</h1>
+  <div>
+    <label for="filename">Filename:</label>
+    <input type="text" id="filename" value="myfile.txt" />
+  </div>
+  <textarea id="editor" placeholder="Start typing..."></textarea>
+  <div class="controls">
+    <button id="saveBtn">Save</button>
+    <button id="loadBtn">Load</button>
+    <span id="status"></span>
+  </div>
+  <script>
+    const editor = document.getElementById('editor');
+    const filenameInput = document.getElementById('filename');
+    const saveBtn = document.getElementById('saveBtn');
+    const loadBtn = document.getElementById('loadBtn');
+    const status = document.getElementById('status');
+
+    function showStatus(msg, isError = false) {
+      status.textContent = msg;
+      status.style.color = isError ? 'red' : 'green';
+      setTimeout(() => status.textContent = '', 2000);
+    }
+
+    saveBtn.addEventListener('click', () => {
+      const filename = filenameInput.value.trim();
+      const content = editor.value;
+      if (!filename) return showStatus('Filename required', true);
+
+      fetch('/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename, content })
+      })
+      .then(res => res.text())
+      .then(msg => showStatus(msg))
+      .catch(err => showStatus('Save failed', true));
+    });
+
+    loadBtn.addEventListener('click', () => {
+      const filename = filenameInput.value.trim();
+      if (!filename) return showStatus('Filename required', true);
+
+      fetch(`/load?filename=${encodeURIComponent(filename)}`)
+      .then(res => {
+        if (!res.ok) throw new Error('File not found');
+        return res.json();
+      })
+      .then(data => {
+        editor.value = data.content;
+        showStatus('Loaded!');
+      })
+      .catch(() => showStatus('Load failed', true));
+    });
+  </script>
+</body>
+</html>
