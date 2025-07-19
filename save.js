@@ -1,22 +1,18 @@
-import fs from 'fs';
-import path from 'path';
+import { MongoClient } from "mongodb";
+
+const uri = process.env.MONGODB_URI;
+const client = new MongoClient(uri);
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    res.status(405).send('Method Not Allowed');
-    return;
-  }
+  if (req.method !== "POST") return res.status(405).send("Only POST allowed");
   const { filename, content } = req.body;
-  if (!filename || typeof content !== 'string') {
-    res.status(400).send('Missing filename or content');
-    return;
-  }
-  const dataDir = path.join(process.cwd(), 'data');
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir);
-  }
-  fs.writeFile(path.join(dataDir, filename), content, err => {
-    if (err) return res.status(500).send('Error saving file');
-    res.send('Saved!');
-  });
+  if (!filename || typeof content !== "string") return res.status(400).send("Missing filename or content");
+  await client.connect();
+  const db = client.db("emergencybriefcase");
+  await db.collection("files").updateOne(
+    { filename },
+    { $set: { content } },
+    { upsert: true }
+  );
+  res.send("Saved!");
 }
