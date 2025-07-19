@@ -8,3 +8,6 @@
 }
   }
 }
+"dependencies": {
+  "mongodb": "^5.7.0"
+}
